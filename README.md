@@ -1,4 +1,7 @@
-MinePlus ✨
+<div align="center">
+# **MinePlus ✨
+</div>
+
 MinePlus es un Add-on para Minecraft Bedrock que busca mejorar la calidad de vida en la agricultura y la recolección de materiales, diseñado para ser ligero, eficiente y prevenir el lag.
 
 🚀 Características
