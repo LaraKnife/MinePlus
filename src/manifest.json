@@ -1,0 +1,30 @@
+{
+    "format_version": 2,
+    "header": {
+        "description": "My first Minecraft Bedrock mod, with all functions and features that I think are useful!",
+        "name": "MinePlus",
+        "uuid": "1022145e-11de-4502-ba95-de82c3036c34",
+        "version": [0, 0, 1],
+        "min_engine_version": [1, 21, 0]
+    },
+    "modules": [
+        {
+            "description": "Scripting JavaScript",
+            "type": "script",
+            "language": "javascript",
+            "uuid": "4b82f627-cc58-434b-9571-466c5b11f759",
+            "entry": "scripts/main.js",
+            "version": [0, 0, 1]
+        }
+    ],
+    "dependencies": [
+        {
+            "module_name": "@minecraft/server",
+            "version": "1.12.0"
+        },
+        {
+            "module_name": "@minecraft/server-ui",
+            "version": "1.2.0"
+        }
+    ]
+}
