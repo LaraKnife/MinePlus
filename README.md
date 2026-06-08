@@ -22,7 +22,7 @@ Esto abrirá un menú visual donde podrás alternar el interruptor (toggle) seg�
 
 🛠️ Instalación
 Para jugadores:
-Descarga el archivo MinePlus.mcpack desde la sección de Releases. (*Proximamente)
+Descarga el archivo MinePlus.mcpack desde la sección de Releases.
 
 Haz doble clic en el archivo o ábrelo con Minecraft.
 
@@ -41,11 +41,12 @@ Usa npm run deploy para mover el mod a tu carpeta de desarrollo de Minecraft (Wi
 
 📋 Requisitos
 Minecraft Bedrock Edition (versión 1.21.0 o superior).
-* No está planeada compatibilidad con versiones anteriores.
+
+- No está planeada compatibilidad con versiones anteriores.
 
 Experimental Gameplay: Asegúrate de tener activada la opción "Beta APIs" en la configuración de experimentos del mundo.
 
 📄 Licencia
 Este proyecto es de código abierto. Siéntete libre de contribuir o modificarlo para tus propios servidores.
 
-* Ten en cuenta que es mi primer proyecto y es la primer versión, así que podría presentar errores, en un futuro se irán agregando características y mejorando la calidad en general. *
+- Ten en cuenta que es mi primer proyecto y es la primer versión, así que podría presentar errores, en un futuro se irán agregando características y mejorando la calidad en general. \*
