@@ -1,7 +1,7 @@
 {
   "name": "mineplus",
-  "version": "0.0.3",
-  "description": "My first Minecraft Bedrock mod, with all functions and features that I think are useful!",
+  "version": "1.0.0",
+  "description": "Add-on en desarrollo para Minecraft Bedrock Edition, con funciones útiles para mejorar la experiencia de juego. By LaraKnife.",
   "main": "src/scripts/main.js",
   "scripts": {
     "deploy": "node deploy.js",

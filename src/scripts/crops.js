@@ -1,4 +1,4 @@
-import { system } from "@minecraft/server";
+import { system, BlockPermutation } from "@minecraft/server";
 
 // Cultivos soportados
 export const CROP_TYPES = {
@@ -13,15 +13,15 @@ export const CROP_TYPES = {
   "minecraft:pitcher_crop": { propiedad: "growth", max: 4 },
 };
 
-export function handleCropBreak(block, player) {
-  const tipoDeBloque = block.typeId;
+export function handleCropBreak(block, brokenPermutation, player) {
+  const tipoDeBloque = brokenPermutation.type.id;
   const configCultivo = CROP_TYPES[tipoDeBloque];
 
-  if (!configCultivo) return;
+  if (!configCultivo) return; // Cultivo no soportado
 
   const dimension = block.dimension;
   const location = block.location;
-  const estadosOriginales = block.permutation.getStates();
+  const estadosOriginales = { ...brokenPermutation.getAllStates() };
   const etapaActual = estadosOriginales[configCultivo.propiedad];
 
   // Replanta si el cultivo ha crecido por completo
@@ -30,12 +30,9 @@ export function handleCropBreak(block, player) {
       const bloqueActual = dimension.getBlock(location);
       if (!bloqueActual) return;
 
-      bloqueActual.setType("minecraft:air");
-
       const nuevosEstados = { ...estadosOriginales };
       nuevosEstados[configCultivo.propiedad] = 0;
 
-      bloqueActual.setType(tipoDeBloque);
       const nuevaPermutacion = BlockPermutation.resolve(
         tipoDeBloque,
         nuevosEstados,
@@ -46,12 +43,6 @@ export function handleCropBreak(block, player) {
       dimension.runCommand(
         `playsound item.crop.plant @a[r=15] ${location.x} ${location.y} ${location.z} 0.4 1.1`,
       );
-    });
-  } else {
-    // Cultivo sin madurar
-    system.run(() => {
-      const bloqueActual = dimension.getBlock(location);
-      if (bloqueActual) bloqueActual.setType("minecraft:air");
     });
   }
 }

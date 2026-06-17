@@ -2,43 +2,44 @@ import { system } from "@minecraft/server";
 import { CROP_TYPES, handleCropBreak } from "./crops.js";
 
 export function handleBlockBreak(eventData) {
-  const player = eventData.player;
-  const block = eventData.block;
-  const blockID = block.typeId;
-  const dimension = block.dimension;
+  const { player, block, brokenBlockPermutation, dimension } = eventData;
+  const blockID = brokenBlockPermutation.type.id;
   const location = block.location;
-  const equipo = player.getComponent("minecraft:equipment_inventory");
-  const herramienta = equipo?.getEquipment("Mainhand");
-  const itemsQueSoltara = block.permutation.getDrops(herramienta); // Respeta encantamientos
 
-  // Autorrecolección
-  if (itemsQueSoltara && itemsQueSoltara.length > 0) {
-    eventData.cancel = true;
+  // Si es cultivo
+  if (blockID in CROP_TYPES) {
+    handleCropBreak(block, brokenBlockPermutation, player);
+  }
 
+  // Autocolect
+  system.runTimeout(() => {
     const inventario = player.getComponent("minecraft:inventory")?.container;
     if (!inventario) return;
 
-    for (const itemStack of itemsQueSoltara) {
+    const itemsEnElSuelo = dimension.getEntities({
+      location: location,
+      maxDistance: 1.5,
+      type: "minecraft:item",
+    });
+
+    for (const entity of itemsEnElSuelo) {
+      const itemComponent = entity.getComponent("minecraft:item");
+      if (!itemComponent) continue;
+
+      const itemStack = itemComponent.itemStack;
+
       try {
         const itemSobrante = inventario.addItem(itemStack);
-        // Inventario lleno
-        if (itemSobrante && itemSobrante.amount > 0) {
-          dimension.spawnItem(itemSobrante, location);
+
+        if (!itemSobrante || itemSobrante.amount === 0) {
+          entity.remove();
+        } else {
+          entity.remove();
+          dimension.spawnItem(itemSobrante, location); // Inventario lleno
         }
-      } catch (e) {
-        dimension.spawnItem(itemStack, location);
+      } catch (error) {
+        // Secure
       }
     }
-
-    // Replantado
-    if (blockID in CROP_TYPES) {
-      handleCropBreak(block, player);
-    } else {
-      // Bloques no cultivables
-      system.run(() => {
-        const bloqueActual = dimension.getBlock(location);
-        if (bloqueActual) bloqueActual.setType("minecraft:air");
-      });
-    }
-  }
+  }, 1);
 }

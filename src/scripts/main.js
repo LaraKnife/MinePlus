@@ -1,20 +1,10 @@
-import {
-  world,
-  system,
-  BlockPermutation,
-  DynamicPropertiesDefinition,
-} from "@minecraft/server";
+import { world, system, BlockPermutation } from "@minecraft/server";
 import { handleMenu } from "./menu.js";
 import { handleBlockBreak } from "./autocolect.js";
 import { handleHomeCommand, handleSetHomeCommand } from "./home.js";
 
 // Dynamic Property Key
 export const DYNAMIC_PROP_KEY = "mineplus:auto_farm";
-world.afterEvents.worldInitialize.subscribe((event) => {
-  const def = new DynamicPropertiesDefinition();
-  def.defineBoolean(DYNAMIC_PROP_KEY);
-  event.registerDynamicProperties(def, "minecraft:player");
-});
 
 // Comandos
 world.beforeEvents.chatSend.subscribe((eventData) => {
@@ -25,9 +15,9 @@ world.beforeEvents.chatSend.subscribe((eventData) => {
   if (mensaje === "!menu") {
     eventData.cancel = true;
 
-    system.run(() => {
+    system.runTimeout(() => {
       handleMenu(player);
-    });
+    }, 10);
     // Comando SetHome
   } else if (mensaje === "!sethome") {
     eventData.cancel = true;
@@ -46,7 +36,7 @@ world.beforeEvents.chatSend.subscribe((eventData) => {
 });
 
 // Función principal
-world.beforeEvents.playerBreakBlock.subscribe((eventData) => {
+world.afterEvents.playerBreakBlock.subscribe((eventData) => {
   const player = eventData.player;
   const estaActivo = player.getDynamicProperty(DYNAMIC_PROP_KEY) ?? true;
   if (!estaActivo) return;

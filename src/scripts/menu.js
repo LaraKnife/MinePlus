@@ -6,24 +6,37 @@ export function handleMenu(player) {
   const estadoActual = player.getDynamicProperty(DYNAMIC_PROP_KEY) ?? true;
 
   const form = new ModalFormData();
-  form.title("§l§2MinePlus v0.0.2§r");
-  form.toggle("Cosecha e Inventario Automático", estadoActual);
+  form.title("§l§2MinePlus V1 Release§r");
+  form.toggle("Cosecha e Inventario Automático", {
+    defaultValue: !!estadoActual,
+  });
 
-  form
-    .show(player)
-    .then((response) => {
-      if (response.canceled) return;
+  player.sendMessage("§e[MinePlus] Cierra el chat para ver el menú...");
 
-      const [nuevoEstado] = response.formValues;
-      player.setDynamicProperty(DYNAMIC_PROP_KEY, nuevoEstado);
+  function renderForm() {
+    form
+      .show(player)
+      .then((response) => {
+        if (response.canceled && response.cancelationReason === "UserBusy") {
+          system.runTimeout(renderForm, 10);
+          return;
+        }
 
-      if (nuevoEstado) {
-        player.sendMessage("§a[MinePlus] Activado.");
-      } else {
-        player.sendMessage("§c[MinePlus] Desactivado.");
-      }
-    })
-    .catch((error) => {
-      console.error("Error al renderizar el formulario: ", error);
-    });
+        if (response.canceled || !response.formValues) return;
+
+        const [nuevoEstado] = response.formValues;
+        player.setDynamicProperty(DYNAMIC_PROP_KEY, nuevoEstado);
+
+        if (nuevoEstado) {
+          player.sendMessage("§a[MinePlus] Activado.");
+        } else {
+          player.sendMessage("§c[MinePlus] Desactivado.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error al renderizar el formulario: ", error);
+      });
+  }
+
+  renderForm();
 }
