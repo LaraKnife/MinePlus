@@ -1,6 +1,6 @@
 {
   "name": "mineplus",
-  "version": "1.0.0",
+  "version": "1.5.0 beta",
   "description": "Add-on en desarrollo para Minecraft Bedrock Edition, con funciones útiles para mejorar la experiencia de juego. By LaraKnife.",
   "main": "src/scripts/main.js",
   "scripts": {

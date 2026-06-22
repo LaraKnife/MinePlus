@@ -1,6 +1,5 @@
 import { system, BlockPermutation } from "@minecraft/server";
 
-// Cultivos soportados
 export const CROP_TYPES = {
   "minecraft:wheat": { propiedad: "growth", max: 7 },
   "minecraft:carrots": { propiedad: "growth", max: 7 },
@@ -13,18 +12,15 @@ export const CROP_TYPES = {
   "minecraft:pitcher_crop": { propiedad: "growth", max: 4 },
 };
 
-export function handleCropBreak(block, brokenPermutation, player) {
+export function handleFarm(block, brokenPermutation, player) {
   const tipoDeBloque = brokenPermutation.type.id;
   const configCultivo = CROP_TYPES[tipoDeBloque];
-
-  if (!configCultivo) return; // Cultivo no soportado
 
   const dimension = block.dimension;
   const location = block.location;
   const estadosOriginales = { ...brokenPermutation.getAllStates() };
   const etapaActual = estadosOriginales[configCultivo.propiedad];
 
-  // Replanta si el cultivo ha crecido por completo
   if (etapaActual === configCultivo.max) {
     system.run(() => {
       const bloqueActual = dimension.getBlock(location);
@@ -39,10 +35,10 @@ export function handleCropBreak(block, brokenPermutation, player) {
       );
       bloqueActual.setPermutation(nuevaPermutacion);
 
-      // Sonido cosecha
-      dimension.runCommand(
-        `playsound item.crop.plant @a[r=15] ${location.x} ${location.y} ${location.z} 0.4 1.1`,
-      );
+      dimension.playSound("item.crop.plant", location, {
+        volume: 0.4,
+        pitch: 1.1,
+      });
     });
   }
 }
