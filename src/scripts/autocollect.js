@@ -7,9 +7,9 @@ export function handleBlockBreak(eventData) {
   const blockID = brokenBlockPermutation.type.id;
   const location = block.location;
 
+  const autoFarm = player.getDynamicProperty(PROPERTIES.AUTO_FARM) ?? true;
   const autoCollect =
     player.getDynamicProperty(PROPERTIES.AUTO_COLLECT) ?? true;
-  const autoFarm = player.getDynamicProperty(PROPERTIES.AUTO_FARM) ?? true;
 
   // Replantado Automático
   if (autoFarm && blockID in CROP_TYPES) {

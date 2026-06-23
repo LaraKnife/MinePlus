@@ -45,6 +45,13 @@ export function handleHomeCommand(player, homeName) {
   const homes = getPlayerHomes(player);
   const homeData = homes[homeName];
 
+  if (Object.keys(homes).length === 0) {
+    player.sendMessage(
+      "§c[MinePlus] No tienes ningún home guardado. Usa !sethome para establecer uno.",
+    );
+    return;
+  }
+
   if (!homeData) {
     player.sendMessage(
       `§c[MinePlus] No tienes ningún home guardado como '§e${homeName}§c'.`,
@@ -62,6 +69,11 @@ export function handleHomeCommand(player, homeName) {
 
 export function handleDeleteHomeCommand(player, homeName) {
   const homes = getPlayerHomes(player);
+
+  if (Object.keys(homes).length === 0) {
+    player.sendMessage("§c[MinePlus] No tienes ningún home guardado.");
+    return;
+  }
 
   if (!homes[homeName]) {
     player.sendMessage(

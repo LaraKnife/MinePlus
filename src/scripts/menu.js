@@ -3,16 +3,19 @@ import { ModalFormData } from "@minecraft/server-ui";
 import { PROPERTIES } from "./constants.js";
 
 export function handleMenu(player) {
-  const autoCollectState =
-    player.getDynamicProperty(PROPERTIES.AUTO_COLLECT) ?? true;
-  const autoFarmState = player.getDynamicProperty(PROPERTIES.AUTO_FARM) ?? true;
+  const autoCollectState = Boolean(
+    player.getDynamicProperty(PROPERTIES.AUTO_COLLECT) ?? true,
+  );
+  const autoFarmState = Boolean(
+    player.getDynamicProperty(PROPERTIES.AUTO_FARM) ?? true,
+  );
 
-  const isAdmin = player.isOp();
+  const isAdmin = (player.getOpLevel?.() ?? 0) > 0;
   const maxHomesActual =
     world.getDynamicProperty(PROPERTIES.GLOBAL_MAX_HOMES) ?? 3; // 3 por defecto
 
   const form = new ModalFormData();
-  form.title("§l§2MinePlus V1.5.0 Beta§r");
+  form.title("§l§2MinePlus V1.5.1 Beta§r");
 
   form.toggle("Recolección Automática (Aspiradora)", autoCollectState);
   form.toggle("Replantado Automático", autoFarmState);
@@ -41,13 +44,11 @@ export function handleMenu(player) {
 
         if (response.canceled || !response.formValues) return;
 
-        // Desestructuramos en orden: [toggle1, toggle2, slider(si existe)]
         const [nuevoAutoCollect, nuevoAutoFarm, nuevoMaxHomes] =
           response.formValues;
 
-        // Guardamos configuraciones individuales
-        player.setDynamicProperty(AUTO_COLLECT_KEY, nuevoAutoCollect);
-        player.setDynamicProperty(AUTO_FARM_KEY, nuevoAutoFarm);
+        player.setDynamicProperty(PROPERTIES.AUTO_COLLECT, nuevoAutoCollect);
+        player.setDynamicProperty(PROPERTIES.AUTO_FARM, nuevoAutoFarm);
 
         player.sendMessage(
           `§a[MinePlus] Autorecolección: ${nuevoAutoCollect ? "Activada" : "Desactivada"}.`,
@@ -56,13 +57,12 @@ export function handleMenu(player) {
           `§a[MinePlus] Replantado: ${nuevoAutoFarm ? "Activado" : "Desactivado"}.`,
         );
 
-        // Guardamos configuración global si es Admin y hubo un cambio
         if (
           isAdmin &&
           nuevoMaxHomes !== undefined &&
           nuevoMaxHomes !== maxHomesActual
         ) {
-          world.setDynamicProperty(GLOBAL_MAX_HOMES, nuevoMaxHomes);
+          world.setDynamicProperty(PROPERTIES.GLOBAL_MAX_HOMES, nuevoMaxHomes);
           player.sendMessage(
             `§b[MinePlus] Límite global de Homes actualizado a: ${nuevoMaxHomes}.`,
           );

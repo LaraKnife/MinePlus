@@ -34,7 +34,8 @@ const commands = {
         return player.sendMessage(
           "§c[MinePlus] Usa: §e!tpa NombreDelJugador§c.",
         );
-      handleTPACommand(player, targetPlayer);
+      const cleanTargetPlayer = targetPlayer.replace("@", "");
+      handleTPACommand(player, cleanTargetPlayer);
     });
   },
 
