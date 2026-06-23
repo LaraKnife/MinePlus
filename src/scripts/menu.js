@@ -10,7 +10,7 @@ export function handleMenu(player) {
     player.getDynamicProperty(PROPERTIES.AUTO_FARM) ?? true,
   );
 
-  const isAdmin = (player.getOpLevel?.() ?? 0) > 0;
+  const isAdmin = player.isOp === true || player.hasTag("admin");
   const maxHomesActual =
     world.getDynamicProperty(PROPERTIES.GLOBAL_MAX_HOMES) ?? 3; // 3 por defecto
 

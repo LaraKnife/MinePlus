@@ -13,32 +13,33 @@ export const CROP_TYPES = {
 };
 
 export function handleFarm(block, brokenPermutation, player) {
-  const tipoDeBloque = brokenPermutation.type.id;
-  const configCultivo = CROP_TYPES[tipoDeBloque];
+  const blockType = brokenPermutation.type.id;
+  const configCultivo = CROP_TYPES[blockType];
 
-  const dimension = block.dimension;
-  const location = block.location;
-  const estadosOriginales = { ...brokenPermutation.getAllStates() };
-  const etapaActual = estadosOriginales[configCultivo.propiedad];
+  if (!configCultivo) return;
 
-  if (etapaActual === configCultivo.max) {
-    system.run(() => {
-      const bloqueActual = dimension.getBlock(location);
-      if (!bloqueActual) return;
+  try {
+    const etapaActual = brokenPermutation.getState(configCultivo.propiedad);
 
-      const nuevosEstados = { ...estadosOriginales };
-      nuevosEstados[configCultivo.propiedad] = 0;
+    if (etapaActual === configCultivo.max) {
+      system.run(() => {
+        const bloqueActual = block.dimension.getBlock(block.location);
+        if (!bloqueActual) return;
 
-      const nuevaPermutacion = BlockPermutation.resolve(
-        tipoDeBloque,
-        nuevosEstados,
-      );
-      bloqueActual.setPermutation(nuevaPermutacion);
+        const newPermutation = brokenPermutation.withState(
+          configCultivo,
+          propiedad,
+          0,
+        );
+        bloqueActual.setPermutation(newPermutation);
 
-      dimension.playSound("item.crop.plant", location, {
-        volume: 0.4,
-        pitch: 1.1,
+        block.dimension.playSound("item.crop.plant", block.location, {
+          volume: 0.4,
+          pitch: 1.1,
+        });
       });
-    });
+    }
+  } catch (error) {
+    console.warn("§c[MinePlus] Error replantando: " + error);
   }
 }
