@@ -3,7 +3,7 @@ import { world, system } from "@minecraft/server";
 const pendingTPA = new Map();
 
 export function handleTPACommand(player, targetName) {
-  if (player.name === targetName) {
+  if (player.name.toLowerCase() === targetName.toLowerCase()) {
     player.sendMessage(
       "§c[MinePlus] No puedes enviarte una solicitud de teletransporte a ti mismo.",
     );

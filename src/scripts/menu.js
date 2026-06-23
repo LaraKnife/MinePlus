@@ -17,8 +17,10 @@ export function handleMenu(player) {
   const form = new ModalFormData();
   form.title("§l§2MinePlus V1.5.1 Beta§r");
 
-  form.toggle("Recolección Automática (Aspiradora)", autoCollectState);
-  form.toggle("Replantado Automático", autoFarmState);
+  form.toggle("Recolección Automática (Aspiradora)", {
+    defaultValue: autoCollectState,
+  });
+  form.toggle("Replantado Automático", { defaultValue: autoFarmState });
 
   // El slider solo aparece si es admin. Saltos de 1 en 1, min 1, max 10.
   if (isAdmin) {

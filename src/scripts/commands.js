@@ -24,7 +24,7 @@ const commands = {
     system.run(() => handleHomeCommand(player, homeName || "home"));
   },
 
-  "!deletehome": (player, homeName) => {
+  "!delhome": (player, homeName) => {
     system.run(() => handleDeleteHomeCommand(player, homeName || "home"));
   },
 
