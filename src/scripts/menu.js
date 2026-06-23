@@ -15,7 +15,7 @@ export function handleMenu(player) {
     world.getDynamicProperty(PROPERTIES.GLOBAL_MAX_HOMES) ?? 3; // 3 por defecto
 
   const form = new ModalFormData();
-  form.title("§l§2MinePlus V1.5.1 Beta§r");
+  form.title("§l§2MinePlus V1.5.2 Beta§r");
 
   form.toggle("Recolección Automática (Aspiradora)", {
     defaultValue: autoCollectState,
