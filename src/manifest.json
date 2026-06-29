@@ -4,7 +4,7 @@
     "description": "Add-on en desarrollo para Minecraft Bedrock Edition, con funciones útiles para mejorar la experiencia de juego. By LaraKnife.",
     "name": "MinePlus",
     "uuid": "1022145e-11de-4502-ba95-de82c3036c34",
-    "version": [1, 5, 2],
+    "version": [1, 5, 3],
     "min_engine_version": [1, 21, 0]
   },
   "modules": [
@@ -14,7 +14,7 @@
       "language": "javascript",
       "uuid": "4b82f627-cc58-434b-9571-466c5b11f759",
       "entry": "scripts/main.js",
-      "version": [1, 5, 2]
+      "version": [1, 5, 3]
     }
   ],
   "dependencies": [

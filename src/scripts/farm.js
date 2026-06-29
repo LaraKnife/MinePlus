@@ -1,15 +1,18 @@
-import { system, BlockPermutation } from "@minecraft/server";
+import { system } from "@minecraft/server";
 
 export const CROP_TYPES = {
-  "minecraft:wheat": { propiedad: "growth", max: 7 },
-  "minecraft:carrots": { propiedad: "growth", max: 7 },
-  "minecraft:potatoes": { propiedad: "growth", max: 7 },
-  "minecraft:beetroot": { propiedad: "growth", max: 3 },
-  "minecraft:nether_wart": { propiedad: "age", max: 3 },
-  "minecraft:sweet_berry_bush": { propiedad: "growth", max: 3 },
-  "minecraft:cocoa": { propiedad: "growth", max: 2 },
-  "minecraft:torchflower_crop": { propiedad: "growth", max: 2 },
-  "minecraft:pitcher_crop": { propiedad: "growth", max: 4 },
+  "minecraft:wheat": { max: [7] },
+  "minecraft:carrots": { max: [7] },
+  "minecraft:potatoes": { max: [7] },
+  "minecraft:beetroot": { max: [3, 4, 7] },
+  "minecraft:sweet_berry_bush": { max: [3] },
+  "minecraft:cocoa": { max: [2] },
+  "minecraft:nether_wart": { max: [3] },
+  "minecraft:torchflower_crop": { max: [2] },
+  "minecraft:pitcher_crop": { max: [4] },
+  "minecraft:pumpkin_stem": { max: [7] },
+  "minecraft:melon_stem": { max: [7] },
+  "minecraft:chorus_flower": { max: [5] },
 };
 
 export function handleFarm(block, brokenPermutation, player) {
@@ -19,27 +22,51 @@ export function handleFarm(block, brokenPermutation, player) {
   if (!configCultivo) return;
 
   try {
-    const etapaActual = brokenPermutation.getState(configCultivo.propiedad);
+    let propiedadActiva = null;
+    let etapaActual = undefined;
 
-    if (etapaActual === configCultivo.max) {
-      system.run(() => {
-        const bloqueActual = block.dimension.getBlock(block.location);
+    for (const prop of ["growth", "age"]) {
+      const val = brokenPermutation.getState(prop);
+      if (val !== undefined) {
+        propiedadActiva = prop;
+        etapaActual = val;
+        break;
+      }
+    }
+
+    if (propiedadActiva === null || etapaActual === undefined) return;
+
+    const esMaduro = configCultivo.max.includes(etapaActual);
+
+    system.run(() => {
+      try {
+        const dimension = block.dimension;
+        const location = block.location;
+        const bloqueActual = dimension.getBlock(location);
+
         if (!bloqueActual) return;
 
-        const newPermutation = brokenPermutation.withState(
-          configCultivo,
-          propiedad,
+        if (bloqueActual.type.id !== "minecraft:air") {
+          return;
+        }
+
+        const nuevaPermutacion = brokenPermutation.withState(
+          propiedadActiva,
           0,
         );
-        bloqueActual.setPermutation(newPermutation);
+        bloqueActual.setPermutation(nuevaPermutacion);
 
-        block.dimension.playSound("item.crop.plant", block.location, {
-          volume: 0.4,
-          pitch: 1.1,
+        dimension.playSound("item.crop.plant", location, {
+          volume: 0.3,
+          pitch: 1.2,
         });
-      });
-    }
+      } catch (tickError) {
+        console.warn(
+          `[MinePlus] Error en bloque temporal: ${tickError.message}`,
+        );
+      }
+    });
   } catch (error) {
-    console.warn("§c[MinePlus] Error replantando: " + error);
+    console.warn(`§c[MinePlus] Error crítico: ${error.message}`);
   }
 }
