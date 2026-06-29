@@ -47,6 +47,6 @@ export function handleBlockBreak(eventData) {
           // Prevenir crasheos si la entidad desapareció
         }
       }
-    }, 1);
+    }, 2);
   }
 }
