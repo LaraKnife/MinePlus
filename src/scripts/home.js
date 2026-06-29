@@ -25,7 +25,7 @@ export function handleSetHomeCommand(player, homeName) {
 
   if (!homes[homeName] && homeCount >= maxHomes) {
     player.sendMessage(
-      `§c[MinePlus] Has alcanzado el límite de ${maxHomes} homes. Usa !deletehome para hacer espacio.`,
+      `§c[MinePlus] Has alcanzado el límite de ${maxHomes} homes. Usa !delhome para hacer espacio.`,
     );
     return;
   }
@@ -42,12 +42,15 @@ export function handleSetHomeCommand(player, homeName) {
 }
 
 export function handleHomeCommand(player, homeName) {
+  const maxHomes = world.getDynamicProperty(PROPERTIES.GLOBAL_MAX_HOMES) ?? 3;
   const homes = getPlayerHomes(player);
+  const homeKeys = Object.keys(homes);
   const homeData = homes[homeName];
+  const homeIndex = homeKeys.indexOf(homeName);
 
-  if (Object.keys(homes).length === 0) {
+  if (homeKeys.length === 0) {
     player.sendMessage(
-      "§c[MinePlus] No tienes ningún home guardado. Usa !sethome para establecer uno.",
+      "§c[MinePlus] No tienes ningún home guardado. Usa !sethome 'nombre' para establecer uno.",
     );
     return;
   }
@@ -60,6 +63,15 @@ export function handleHomeCommand(player, homeName) {
   }
 
   const dimension = world.getDimension(homeData.dimension);
+
+  if (homeIndex >= maxHomes) {
+    player.sendMessage(
+      `§c[MinePlus] Este home está bloqueado. El límite global es de §e${maxHomes}§c.\n` +
+        `§7Tus primeros ${maxHomes} homes están activos. Usa §c!delhome§7 para liberar espacio o revisa tu lista con §a!homes§7.`,
+    );
+    return;
+  }
+
   player.teleport(
     { x: homeData.x, y: homeData.y, z: homeData.z },
     { dimension: dimension },
@@ -85,4 +97,26 @@ export function handleDeleteHomeCommand(player, homeName) {
   delete homes[homeName];
   savePlayerHomes(player, homes);
   player.sendMessage(`§a[MinePlus] Home '§e${homeName}§a' eliminado.`);
+}
+
+export function handleListHomesCommand(player) {
+  const maxHomes = world.getDynamicProperty(PROPERTIES.GLOBAL_MAX_HOMES) ?? 3;
+  const homes = getPlayerHomes(player);
+  const homeKeys = Object.keys(homes);
+
+  if (homeKeys.length === 0) {
+    player.sendMessage("§c[MinePlus] No tienes ningún home guardado.");
+    return;
+  }
+
+  player.sendMessage(
+    `§a[MinePlus] Tus homes guardados (§e${homeKeys.length}/${maxHomes}§a):`,
+  );
+  homeKeys.forEach((key, index) => {
+    if (index < maxHomes) {
+      player.sendMessage(`§b- §a${key} §7(Activo)`);
+    } else {
+      player.sendMessage(`§b- §c${key} §8(Bloqueado)`);
+    }
+  });
 }

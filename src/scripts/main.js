@@ -1,4 +1,4 @@
-import { world } from "@minecraft/server";
+import { world, system } from "@minecraft/server";
 import { handleBlockBreak } from "./autocollect.js";
 import { handleCommand } from "./commands.js";
 
@@ -10,4 +10,33 @@ world.beforeEvents.chatSend.subscribe((eventData) => {
 // Evento de rompimiento de bloque
 world.afterEvents.playerBreakBlock.subscribe((eventData) => {
   handleBlockBreak(eventData);
+});
+
+// Bienvenida al server
+world.afterEvents.playerSpawn.subscribe((eventData) => {
+  const { player, initialSpawn } = eventData;
+
+  if (initialSpawn) {
+    // Retraso de 2 segundos
+    system.runTimeout(() => {
+      player.sendMessage(
+        "§8============== MinePlus V1.5.3 Beta ==============",
+      );
+      player.sendMessage(`§a§l¡Bienvenido '${player.name}'!§r`);
+      player.sendMessage("§eComandos disponibles:");
+      player.sendMessage("§b!sethome 'nombre' §7- Guarda tu ubicación actual.");
+      player.sendMessage(
+        "§b!home / !h  'nombre' §7- Viaja a un home guardado.",
+      );
+      player.sendMessage("§b!homes §7- Muestra tu lista de homes.");
+      player.sendMessage("§b!delhome 'nombre' §7- Elimina un hogar.");
+      player.sendMessage(
+        "§b!tpa 'jugador' §7- Solicita teletransportarte a alguien.",
+      );
+      player.sendMessage("§b!menu §7- Menú de configuración.");
+      player.sendMessage(
+        "§8==================================================",
+      );
+    }, 40);
+  }
 });

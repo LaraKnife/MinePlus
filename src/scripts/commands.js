@@ -5,6 +5,7 @@ import {
   handleSetHomeCommand,
   handleHomeCommand,
   handleDeleteHomeCommand,
+  handleListHomesCommand,
 } from "./home.js";
 
 const commands = {
@@ -26,6 +27,10 @@ const commands = {
 
   "!delhome": (player, homeName) => {
     system.run(() => handleDeleteHomeCommand(player, homeName || "home"));
+  },
+
+  "!homes": (player) => {
+    system.run(() => handleListHomesCommand(player));
   },
 
   "!tpa": (player, targetPlayer) => {
